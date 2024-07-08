@@ -20,7 +20,10 @@ if st.button("Calculate"):
                 input=text,
                 model="text-embedding-ada-002"  # Change to the desired model
             )
-            return np.array(response['data'][0]['embedding'])
+            if 'data' in response and response['data'] and 'embedding' in response['data'][0]:
+                return np.array(response['data'][0]['embedding'])
+            else:
+                raise ValueError("Invalid response format from OpenAI API")
 
         # Calculate embeddings
         embedding1 = get_embedding(text1)
@@ -46,6 +49,7 @@ if st.button("Calculate"):
 
     except openai.error.OpenAIError as e:
         st.error(f"OpenAI API request failed: {e}")
-
-    except ValueError:
-        st.error("Invalid response from OpenAI API")
+    except ValueError as ve:
+        st.error(f"Error processing OpenAI response: {ve}")
+    except Exception as ex:
+        st.error(f"Unexpected error: {ex}")

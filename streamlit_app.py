@@ -2,12 +2,12 @@ import streamlit as st
 import openai
 import numpy as np
 import torch
-import os
+import traceback
 
 st.title("Text Similarity Checker")
 
-# Set your OpenAI API key from environment variable
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Retrieve OpenAI API key from Streamlit secrets
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 text1 = st.text_area("Enter first text:")
 text2 = st.text_area("Enter second text:")
@@ -49,7 +49,10 @@ if st.button("Calculate"):
 
     except openai.error.OpenAIError as e:
         st.error(f"OpenAI API request failed: {e}")
+        traceback.print_exc()  # Print traceback for more detailed error information
     except ValueError as ve:
         st.error(f"Error processing OpenAI response: {ve}")
+        traceback.print_exc()  # Print traceback for more detailed error information
     except Exception as ex:
         st.error(f"Unexpected error: {ex}")
+        traceback.print_exc()  # Print traceback for more detailed error information
